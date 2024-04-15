@@ -15,17 +15,15 @@ public class GildedRoseApprovalTest {
 
 	@Test
 	public void foo() {
-
         Item[] items = new Item[] { new Item("foo", 0, 0) };
         GildedRose app = new GildedRose(items);
-        app.updateQuality();
+        app.processDay();
 
 		Approvals.verifyAll("Items", items);
 	}
 
     @Test
     public void thirtyDays() {
-
         ByteArrayOutputStream fakeoutput = new ByteArrayOutputStream();
         System.setOut(new PrintStream(fakeoutput));
         System.setIn(new ByteArrayInputStream("a\n".getBytes()));
