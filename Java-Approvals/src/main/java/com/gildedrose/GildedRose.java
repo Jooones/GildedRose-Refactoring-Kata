@@ -15,51 +15,43 @@ class GildedRose {
     }
 
     public void processDay() {
-        updateSellIn();
-        updateQuality();
-    }
-
-    private void updateSellIn() {
-        for (Item item : items) {
-            if (!item.name.equals(SULFURAS)) {
-                item.sellIn--;
-            }
-        }
-    }
-
-    private void updateQuality() {
         Arrays.stream(items)
             .filter(item -> !item.name.equals(SULFURAS))
             .forEach(item -> {
-                if (!item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE_PASS)) {
-                    if (item.quality > 0) {
-                        decreaseQuality(item);
-                    }
-                } else {
-                    if (item.name.equals(BACKSTAGE_PASS) && item.sellIn < 5) {
-                        increaseQuality(item, 3);
-                    } else if (item.name.equals(BACKSTAGE_PASS) && item.sellIn < 10) {
-                        increaseQuality(item, 2);
-                    } else {
-                        increaseQuality(item, 1);
-                    }
-                }
-
-                if (item.sellIn < 0) {
-                    if (!item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE_PASS)) {
-                        if (item.quality > 0) {
-                            decreaseQuality(item);
-                        }
-                    } else {
-                        if (item.quality < 50) {
-                            increaseQuality(item, 1);
-                        }
-                    }
-                    if (item.name.equals(BACKSTAGE_PASS)) {
-                        item.quality = 0;
-                    }
-                }
+                item.sellIn--;
+                updateQuality(item);
             });
+    }
+
+    private void updateQuality(Item item) {
+        if (!item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE_PASS)) {
+            if (item.quality > 0) {
+                decreaseQuality(item);
+            }
+        } else {
+            if (item.name.equals(BACKSTAGE_PASS) && item.sellIn < 5) {
+                increaseQuality(item, 3);
+            } else if (item.name.equals(BACKSTAGE_PASS) && item.sellIn < 10) {
+                increaseQuality(item, 2);
+            } else {
+                increaseQuality(item, 1);
+            }
+        }
+
+        if (item.sellIn < 0) {
+            if (!item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE_PASS)) {
+                if (item.quality > 0) {
+                    decreaseQuality(item);
+                }
+            } else {
+                if (item.quality < 50) {
+                    increaseQuality(item, 1);
+                }
+            }
+            if (item.name.equals(BACKSTAGE_PASS)) {
+                item.quality = 0;
+            }
+        }
     }
 
     private static void decreaseQuality(Item item) {
