@@ -25,30 +25,21 @@ class GildedRose {
 
     private void updateQuality(Item item) {
         if (isDefaultItem(item)) {
-            decreaseQuality(item);
-        } else {
-            if (item.name.equals(BACKSTAGE_PASS)) {
-                if (item.sellIn < 5) {
-                    increaseQuality(item, 3);
-                } else if (item.sellIn < 10) {
-                    increaseQuality(item, 2);
-                }
-                if (item.sellIn >= 10) {
-                    increaseQuality(item, 1);
-                }
-            }
-            if (item.name.equals(AGED_BRIE)) {
-                increaseQuality(item, 1);
-            }
+            decreaseQuality(item, isExpired(item));
         }
-
-        if (isExpired(item)) {
-            if (isDefaultItem(item)) {
-                decreaseQuality(item);
-            } else {
-                increaseQuality(item, 1);
+        if (item.name.equals(AGED_BRIE)) {
+            increaseQualityForAgedBrie(item, isExpired(item));
+        }
+        if (item.name.equals(BACKSTAGE_PASS)) {
+            if (item.sellIn < 5) {
+                increaseQualityForBackstagePass(item, 3);
+            } else if (item.sellIn < 10) {
+                increaseQualityForBackstagePass(item, 2);
             }
-            if (item.name.equals(BACKSTAGE_PASS)) {
+            if (item.sellIn >= 10) {
+                increaseQualityForBackstagePass(item, 1);
+            }
+            if (isExpired(item)) {
                 item.quality = 0;
             }
         }
@@ -62,13 +53,31 @@ class GildedRose {
         return !item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE_PASS);
     }
 
-    private void decreaseQuality(Item item) {
+    private void decreaseQuality(Item item, boolean expired) {
         if (item.quality > 0) {
+            item.quality--;
+        }
+        if (expired && item.quality > 0) {
             item.quality--;
         }
     }
 
-    private void increaseQuality(Item item, int amount) {
+    private void increaseQualityForAgedBrie(Item item, boolean expired) {
+        if (item.quality + 1 > 50) {
+            item.quality = 50;
+        } else {
+            item.quality++;
+        }
+        if (expired) {
+            if (item.quality + 1 > 50) {
+                item.quality = 50;
+            } else {
+                item.quality++;
+            }
+        }
+    }
+
+    private void increaseQualityForBackstagePass(Item item, int amount) {
         if (item.quality + amount > 50) {
             item.quality = 50;
         } else {
